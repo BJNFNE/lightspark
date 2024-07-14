@@ -1988,8 +1988,8 @@ void Stage::defaultEventBehavior(_R<Event> e)
 	if (e->type == "keyDown")
 	{
 		KeyboardEvent* ev = e->as<KeyboardEvent>();
-		uint32_t modifiers = ev->getModifiers() & (KMOD_LSHIFT | KMOD_RSHIFT |KMOD_LCTRL | KMOD_RCTRL | KMOD_LALT | KMOD_RALT);
-		if (modifiers == KMOD_NONE)
+		uint32_t modifiers = ev->getModifiers() & (LSModifier::Shift | LSModifier::Ctrl | LSModifier::Alt);
+		if (modifiers == LSModifier::None)
 		{
 			switch (ev->getKeyCode())
 			{
