@@ -217,6 +217,8 @@ public:
 	virtual void requestInvalidation(InvalidateQueue* q, bool forceTextureRefresh=false);
 	void updateCachedSurface(IDrawable* d);
 	MATRIX getConcatenatedMatrix(bool includeRoot=false) const;
+	Vector2f localToGlobal(const Vector2f& point) const;
+	Vector2f globalToLocal(const Vector2f& point) const;
 	void localToGlobal(number_t xin, number_t yin, number_t& xout, number_t& yout) const;
 	void globalToLocal(number_t xin, number_t yin, number_t& xout, number_t& yout) const;
 	float getConcatenatedAlpha() const;

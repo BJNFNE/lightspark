@@ -1243,27 +1243,37 @@ void DisplayObject::updateCachedSurface(IDrawable *d)
 }
 //TODO: Fix precision issues, Adobe seems to do the matrix mult with twips and rounds the results, 
 //this way they have less pb with precision.
-void DisplayObject::localToGlobal(number_t xin, number_t yin, number_t& xout, number_t& yout) const
+Vector2f DisplayObject::localToGlobal(const Vector2f& point) const
 {
 	if (this == getSystemState()->mainClip)
 	{
 		// don't compute current scaling of the main clip into coordinates
-		xout=xin;
-		yout=yin;
-		xout += tx;
-		yout += ty;
+		return point + Vector2f(tx, ty);
 	}
 	else
 	{
-		getMatrix().multiply2D(xin, yin, xout, yout);
-		if(parent)
-			parent->localToGlobal(xout, yout, xout, yout);
+		Vector2f newPoint = getMatrix().multiply2D(point);
+		if (parent != nullptr)
+			return parent->localToGlobal(newPoint);
+		return newPoint;
 	}
 }
 //TODO: Fix precision issues
+Vector2f DisplayObject::globalToLocal(const Vector2f& point) const
+{
+	return getConcatenatedMatrix().getInverted().multiply2D(point);
+}
+void DisplayObject::localToGlobal(number_t xin, number_t yin, number_t& xout, number_t& yout) const
+{
+	Vector2f global = localToGlobal(Vector2f(xin, yin));
+	xout = global.x;
+	yout = global.y;
+}
 void DisplayObject::globalToLocal(number_t xin, number_t yin, number_t& xout, number_t& yout) const
 {
-	getConcatenatedMatrix().getInverted().multiply2D(xin, yin, xout, yout);
+	Vector2f local = globalToLocal(Vector2f(xin, yin));
+	xout = local.x;
+	yout = local.y;
 }
 void DisplayObject::setOnStage(bool staged, bool force,bool inskipping)
 {
